@@ -168,6 +168,11 @@ class MySample(http.Controller):
     def formulario_denuncia(self):
         return http.request.render('my_sample.formulario_denuncia', {})
     
+    # Ruta que renderiza página de seguimiento de denuncias
+    @http.route('/denuncias/seguimiento/<model("x_cpnaa_complaint"):denuncia>', auth='public', website=True)
+    def seguimiento_denuncia(self, denuncia):
+        return http.request.render('my_sample.detalle_denuncia', { 'denuncia': denuncia })  
+    
     # Activa la automatización para la creación y seguimiento del trámite
     @http.route('/registrar_denuncia', methods=["POST"], auth='public', website=True)
     def registrar_denuncia(self, **kw):
