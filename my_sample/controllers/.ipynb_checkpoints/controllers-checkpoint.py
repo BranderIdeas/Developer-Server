@@ -274,7 +274,7 @@ class MySample(http.Controller):
         elif not numero_recibo or (data['corte'] and data['corte'] != tramite.x_origin_name):
             consecutivo = http.request.env['x_cpnaa_parameter'].sudo().search([('x_name','=','Consecutivo Recibo de Pago')])
             numero_recibo = int(consecutivo.x_value) + 1
-            numero_radicado = Sevenet.sevenet_consulta(tramite.id)
+            numero_radicado = Sevenet.sevenet_consulta(tramite.id, 'Recibo')
             update = {'x_voucher_number': numero_recibo, 'x_radicacion_date': ahora, 'x_rad_number': numero_radicado }
             if data['corte']:
                 update = {'x_voucher_number': numero_recibo,'x_origin_name': data['corte'],
@@ -328,7 +328,7 @@ class MySample(http.Controller):
                 if tramite.x_cycle_ID.x_order > 0:
                     raise Exception('Este pago ya fue registrado')
                 if tramite.x_cycle_ID.x_order == 0:
-                    numero_radicado = Sevenet.sevenet_consulta(tramite.id)
+                    numero_radicado = Sevenet.sevenet_consulta(tramite.id, data['tipo_pago'])
                     if (tramite.x_origin_type.x_name == 'CORTE'):
                         corte_vigente = self.buscar_corte(tramite.x_origin_name)
                         origin_name = corte_vigente['x_name']
@@ -432,7 +432,7 @@ class MySample(http.Controller):
         data = kw.get('data')
         _logger.info(data)
         if self.validar_captcha(kw.get('token')):
-            campos = ['id','x_procedure_ID','create_date', 'x_consecutivo']
+            campos = ['id','x_procedure_ID','create_date', 'x_consecutivo', 'x_create_date_migration']
             certificado = http.request.env['x_procedure_service'].sudo().search_read([('x_procedure_ID.x_studio_tipo_de_documento_1','=',int(data['tipo_doc'])),
                                                                                ('x_procedure_ID.x_studio_documento_1','=',data['documento']),
                                                                                ('x_validity_code','=',data['x_code'])],campos)
@@ -440,6 +440,9 @@ class MySample(http.Controller):
                 campos = ['id','x_studio_nombres','x_studio_apellidos', 'x_studio_tipo_de_documento_1', 'x_studio_documento_1']
                 profesional = http.request.env['x_cpnaa_procedure'].sudo().search_read([('id','=',certificado[0]['x_procedure_ID'][0])], campos)
     #             tiempo_expiracion = http.request.env['x_cpnaa_service'].sudo().search([('id','=',certificado[0]['x_service_ID'][0])]).x_validity
+                _logger.info(certificado[0])
+                if certificado[0]['x_create_date_migration']:
+                    certificado[0]['create_date'] = certificado[0]['x_create_date_migration']
                 certificado[0]['expiration_date'] = certificado[0]['create_date'] + dateutil.relativedelta.relativedelta(months=6)
                 return {'ok': True, 'mensaje': 'El Certificado se encuentra registrado en nuestra Base de Datos.', 
                         'certificado': certificado[0], 'profesional': profesional}

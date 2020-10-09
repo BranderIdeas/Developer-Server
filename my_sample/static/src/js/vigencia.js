@@ -69,6 +69,9 @@ odoo.define('website.vigencia', function(require) {
             $('#documento_prof').text(data.profesional[0].x_studio_documento_1);
             $('#nombres_prof').text(data.profesional[0].x_studio_nombres+' '+data.profesional[0].x_studio_apellidos);
             $('#fecha_vencimiento').text(validaciones.dateTimeToString(data.certificado.expiration_date));
+            $("html, body").animate({
+                scrollTop: $('#btn_vigencia_auth').offset().top
+            }, 800);
         },
         generar_certificado: function(email, _this){
             rpc.query({
