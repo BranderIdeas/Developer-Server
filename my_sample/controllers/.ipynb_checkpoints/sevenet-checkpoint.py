@@ -6,7 +6,7 @@ import requests
 
 _logger = logging.getLogger(__name__)
 
-def sevenet_consulta(id_tramite, tipo_pago):
+def sevenet_consulta(id_tramite):
     tram_json = None
     url = http.request.env['x_cpnaa_parameter'].sudo().search([('x_name','=','URL SERVICIO SEVENET')]).x_value
     tramite = http.request.env['x_cpnaa_procedure'].browse(id_tramite)
@@ -19,7 +19,7 @@ def sevenet_consulta(id_tramite, tipo_pago):
             #residdirecc #residciudad #residindica #residtelefo #celular 
             #email #enviodirrec #enviocelula #envioindica #enviotelefo 
             #enviociudad #enviotelefo #enviociudad #medioelectr #autornombre 
-            #adicionala #adicionalb #pqrdescrip #autordocume #tdepago #adjuntos
+            #adicionala #adicionalb #pqrdescrip #autordocume #adjuntos
             </datos>
             """
 
@@ -53,13 +53,12 @@ def sevenet_consulta(id_tramite, tipo_pago):
     datos = datos.replace('#adicionalb','<adicionalb>%s</adicionalb>' % '')
     datos = datos.replace('#pqrdescrip','<pqrdescrip>%s</pqrdescrip>' % '')
     datos = datos.replace('#autordocume','<autordocume>%s</autordocume>' % '')
-    datos = datos.replace('#tdepago','<tipodepago>%s</tipodepago>' % tipo_pago)
     
     docs_pdf = []
     for key in tram_json:
         if type(tram_json[key]) == bytes and key_to_name(key):
             documento = '<documento> #documento </documento>'
-            nombre_original = '<nombreoriginal>%s%s.pdf</nombreoriginal>' % (key_to_name(key), tramite.x_studio_documento_1)
+            nombre_original = '<nombreoriginal>%s%s</nombreoriginal>' % (key_to_name(key), tramite.x_studio_documento_1)
             cuerpo = '<cuerpo>%s</cuerpo>' % tram_json[key]
             documento = documento.replace('#documento','%s %s' % (nombre_original, cuerpo))
             docs_pdf.append(documento)
@@ -70,7 +69,6 @@ def sevenet_consulta(id_tramite, tipo_pago):
     datos = datos.replace('#adjuntos',adjuntos)
     client = Client(url)
     resp = client.service.Registrar(datos)
-    _logger.info(datos)
 
     root = etree.XML(resp)
     body = etree.SubElement(root, "textoRespuesta")

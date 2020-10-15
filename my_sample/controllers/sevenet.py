@@ -70,7 +70,7 @@ def sevenet_consulta(id_tramite, tipo_pago):
     datos = datos.replace('#adjuntos',adjuntos)
     client = Client(url)
     resp = client.service.Registrar(datos)
-    _logger.info(datos)
+    # _logger.info(datos)
 
     root = etree.XML(resp)
     body = etree.SubElement(root, "textoRespuesta")

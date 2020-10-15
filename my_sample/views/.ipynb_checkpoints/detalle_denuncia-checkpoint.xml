@@ -54,7 +54,7 @@
                         <h2 class="sectionName">Fases</h2>
                         <t t-foreach="request.env['x_cpnaa_cycle'].sudo().search([('x_service_ID.x_name','=','DENUNCIA')],order='x_order')" 
                            t-as="fase_denuncia">
-                            <a class="btn btn-primary btn-stadium btn-block mt-3"
+                            <a class="btn btn-primary btn-lg btn-stadium btn-block mt-3"
                                 t-attf-href="#" target="_top">
                                 <t t-esc="fase_denuncia.x_name"/>
                             </a>

@@ -34,7 +34,6 @@ odoo.define('website.tramites', function(require) {
                 params: {'data': data, 'token': token}
             }).then(function(response){
                 resetCaptcha();
-                console.log(response);
                 if (response.error_captcha){
                     return;
                 }                
