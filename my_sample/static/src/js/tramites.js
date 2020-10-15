@@ -54,8 +54,10 @@ odoo.define('website.tramites', function(require) {
                     } else {
                         $(location).attr('href','/tramite' + origen+'/['+data.doc_type+':'+data.doc+']');
                     }
-                }
-                else {
+                } else if (!response.id && location.href.indexOf('/consulta') != -1){
+                        $('#msj_result').removeClass('invisible').attr('aria-hidden',false);
+                        $('#text_message').text(`No se ha encontrado trámite en curso con los datos ingresados`);
+                } else {
                     $(location).attr('href','/tramite' + origen+'/['+data.doc_type+':'+data.doc+']');
                 }
             })

@@ -187,7 +187,7 @@ odoo.define('website.pagos', function(require) {
         if($('[name="x_service_name"]').val().indexOf('CERTIFICADO') != -1){
             tramite = 'inscripciontt';
         }
-        location.replace('/cliente/tramite/'+tramite);
+        window.top.location.href = 'https://www.cpnaa.gov.co/';
     })
 
     if(location.href.indexOf(`/pagos/[`) != -1){

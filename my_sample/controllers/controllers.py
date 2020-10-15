@@ -150,7 +150,9 @@ class MySample(http.Controller):
                     'id_tramite': data['data']['x_extra1']
                 }
                 resultado_pago = self.tramite_fase_verificacion(data_tramite)
-                _logger.info(resultado_pago)
+            else:
+                resultado_pago = { 'ok': False, 'message': 'La transacción no fue aprobada','error': False }
+            _logger.info(resultado_pago)
         return http.request.render('my_sample.epayco_confirmacion', {'ok': success, 'data': data, 'resultado_pago': resultado_pago})
     
     def validar_ref_epayco(self, ref_payco):
@@ -219,7 +221,12 @@ class MySample(http.Controller):
     @http.route('/consulta_online/por_numero', auth='public', website=True)
     def consulta_por_numero(self):
         return http.request.render('my_sample.consulta_registro', {'form': 'por_numero'})
-        
+    
+    # Ruta que renderiza página de consulta estado trámite
+    @http.route('/cliente/tramite/consulta', auth='public', website=True)
+    def estado_tramite(self):
+        return http.request.render('my_sample.inicio_tramite', {'form': 'consulta', 'inicio_tramite': False})
+           
     # Realiza la consulta del registro online por documento o numero de tarjeta
     @http.route('/realizar_consulta', methods=["POST"], type="json", auth='public', website=True)
     def realizar_consulta(self, **kw):
@@ -432,7 +439,7 @@ class MySample(http.Controller):
         data = kw.get('data')
         _logger.info(data)
         if self.validar_captcha(kw.get('token')):
-            campos = ['id','x_procedure_ID','create_date', 'x_consecutivo']
+            campos = ['id','x_procedure_ID','create_date', 'x_consecutivo', 'x_create_date_migration']
             certificado = http.request.env['x_procedure_service'].sudo().search_read([('x_procedure_ID.x_studio_tipo_de_documento_1','=',int(data['tipo_doc'])),
                                                                                ('x_procedure_ID.x_studio_documento_1','=',data['documento']),
                                                                                ('x_validity_code','=',data['x_code'])],campos)
@@ -440,6 +447,9 @@ class MySample(http.Controller):
                 campos = ['id','x_studio_nombres','x_studio_apellidos', 'x_studio_tipo_de_documento_1', 'x_studio_documento_1']
                 profesional = http.request.env['x_cpnaa_procedure'].sudo().search_read([('id','=',certificado[0]['x_procedure_ID'][0])], campos)
     #             tiempo_expiracion = http.request.env['x_cpnaa_service'].sudo().search([('id','=',certificado[0]['x_service_ID'][0])]).x_validity
+                _logger.info(certificado[0])
+                if certificado[0]['x_create_date_migration']:
+                    certificado[0]['create_date'] = certificado[0]['x_create_date_migration']
                 certificado[0]['expiration_date'] = certificado[0]['create_date'] + dateutil.relativedelta.relativedelta(months=6)
                 return {'ok': True, 'mensaje': 'El Certificado se encuentra registrado en nuestra Base de Datos.', 
                         'certificado': certificado[0], 'profesional': profesional}
