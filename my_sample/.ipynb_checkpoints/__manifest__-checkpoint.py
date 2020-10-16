@@ -42,7 +42,6 @@
         'views/consulta_registro.xml',
         'views/formulario_denuncia.xml',
         'views/formulario_pqrd.xml',
-        'views/detalle_denuncia.xml',
         'views/politica_datos.xml',
         'views/validacion_cert_de_vigencia.xml',
         'reports/cert_vigencia.xml'
