@@ -165,6 +165,24 @@ class MySample(http.Controller):
     def formulario_denuncia(self):
         return http.request.render('my_sample.formulario_denuncia', {})
     
+    # Ruta que renderiza página de seguimiento de denuncias
+    @http.route('/denuncias/seguimiento/<model("x_cpnaa_complaint"):denuncia>', auth='public', website=True)
+    def seguimiento_denuncia(self, denuncia):
+        return http.request.render('my_sample.detalle_denuncia', { 'denuncia': denuncia })  
+    
+    # Ruta que renderiza página de formulario de denuncias
+    @http.route('/get_profesional', methods=["POST"], type="json", auth='public', website=True)
+    def get_profesional(self, **kw):
+        _logger.info(kw)
+        campos = ['x_studio_nombres','x_studio_apellidos','x_studio_carrera_1','x_studio_documento_1','x_enrollment_number'] 
+        tramites = http.request.env['x_cpnaa_procedure'].search_read([('x_studio_tipo_de_documento_1.id','=',kw['tipo_doc']),
+                                                                      ('x_studio_documento_1','=',kw['documento']),
+                                                                      ('x_cycle_ID.x_order','=',5)],campos)
+        if tramites:
+            return {'ok': True, 'result': tramites}
+        else:
+            return {'ok': False, 'result': 'No hay registros con la información suministrada'}
+    
     # Activa la automatización para la creación y seguimiento del trámite
     @http.route('/registrar_denuncia', methods=["POST"], auth='public', website=True)
     def registrar_denuncia(self, **kw):
