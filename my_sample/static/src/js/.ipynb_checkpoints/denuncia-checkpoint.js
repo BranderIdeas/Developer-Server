@@ -104,6 +104,17 @@ odoo.define('website.denuncia', function(require) {
                 params: {'documento': documento, 'tipo_doc': tipo_doc}
             }).then(function(response){
                 console.log(response);
+                if(response.ok){
+                    const prof = response.result[0];
+                    $("input[name='x_implicated_enrollment_number']").val(prof.x_enrollment_number)
+                    $("input[name='x_implicated_names']").val(prof.x_studio_nombres)
+                    $("input[name='x_implicated_lastnames']").val(prof.x_studio_apellidos)
+                }else{
+                    validaciones.alert_error_toast( response.result, 'top');
+                    $("input[name='x_implicated_enrollment_number']").val("")
+                    $("input[name='x_implicated_names']").val("")
+                    $("input[name='x_implicated_lastnames']").val("")
+                }
             }).catch(function(err){
                 console.log(err);
             });  

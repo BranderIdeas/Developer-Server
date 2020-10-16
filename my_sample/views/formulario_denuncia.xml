@@ -284,7 +284,7 @@ Nota: Para la presentación de quejas ante el CPNAA  no se requiere contar con a
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" class="form-control o_website_form_input v-email"
-                                                name="x_implicated_email" disabled="disabled" />
+                                                name="x_implicated_email" />
                                         </div>
                                     </div>
                                 </div>

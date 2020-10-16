@@ -195,6 +195,7 @@ class MySample(http.Controller):
         for key in borrar:
             del kw[key]
         kw['x_complaint_issues_ID'] = kw['x_complaint_issues_ID'].split(',')
+        kw['x_phase_0'] = True
         try:
             consecutivo = http.request.env['x_cpnaa_consecutive'].sudo().search([('x_name','=','DENUNCIAS')])
             kw['x_name'] = 'DENUNCIA-'+str(consecutivo.x_value + 1)
