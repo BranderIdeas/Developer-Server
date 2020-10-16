@@ -72,6 +72,12 @@ odoo.define('website.pagos', function(require) {
 
             }
             handler.open(dataTran);
+            handler.onCloseModal = function () {
+                alert('Close OnePage');
+                const div = document.querySelector('#overlay-epayco');
+                if(div){ div.remove(); }
+                handler.onCloseModal = null;
+            }
         },
         numero_recibo_radicado: async function() {
             let corte = dataPDF.corte ? dataPDF.corte.x_name : false;
@@ -95,7 +101,7 @@ odoo.define('website.pagos', function(require) {
             return resp;
         },
         downloadPDF: function() {
-                const linkSource = $('#pdfFrame').attr('src');
+            const linkSource = $('#pdfFrame').attr('src');
             const downloadLink = document.createElement("a");
             const fileName = "recibo_cpnaa.pdf";
 

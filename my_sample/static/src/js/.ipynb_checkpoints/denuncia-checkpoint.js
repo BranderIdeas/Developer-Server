@@ -95,28 +95,55 @@ odoo.define('website.denuncia', function(require) {
         esExtensionValida: function(ext) {
             let validos = ["pdf", "jpg", "jpeg", "png"];
             return validos.indexOf(ext) === -1 ? false : true;
+        },
+        get_profesional: function(){
+            const documento = $("input[name='x_implicated_document']").val();
+                const tipo_doc = $("select[name='x_implicated_document_type_ID']").val();
+            return rpc.query({
+                route: '/get_profesional',
+                params: {'documento': documento, 'tipo_doc': tipo_doc}
+            }).then(function(response){
+                console.log(response);
+                if(response.ok){
+                    const prof = response.result[0];
+                    $("input[name='x_implicated_enrollment_number']").val(prof.x_enrollment_number)
+                    $("input[name='x_implicated_names']").val(prof.x_studio_nombres)
+                    $("input[name='x_implicated_lastnames']").val(prof.x_studio_apellidos)
+                }else{
+                    validaciones.alert_error_toast( response.result, 'top');
+                    $("input[name='x_implicated_enrollment_number']").val("")
+                    $("input[name='x_implicated_names']").val("")
+                    $("input[name='x_implicated_lastnames']").val("")
+                }
+            }).catch(function(err){
+                console.log(err);
+            });  
         }
     })
     
     const denuncia = new Denuncia();
     
 	$("#x_evidence_files").change((e) => {
+        const MAX_FILES = 10;
 		files = [...files, ...e.target.files];
 		$("#tableFiles").html("");
-		for (const file of files) {
-			const size = (Number(file.size) / 1024 / 1024).toFixed(2);
-			const ext = file.name.split(".").pop();
-			if (!denuncia.esExtensionValida(ext)) {
+        if(files.length > MAX_FILES){
+            files = files.slice(0, MAX_FILES);
+            validaciones.alert_error_toast( 'Puede adjuntar hasta 10 archivos', 'top');
+        }
+        for (const file of files) {
+            const size = (Number(file.size) / 1024 / 1024).toFixed(2);
+            const ext = file.name.split(".").pop();
+            if (!denuncia.esExtensionValida(ext)) {
                 validaciones.alert_error_toast( `${file.name}, No es un formato valido (Permitidos: pdf, png, jpg, jpeg)`, 'top');
-				files = files.filter((el) => el.name != file.name);
-			} else if (size > 3) {
+                files = files.filter((el) => el.name != file.name);
+            } else if (size > 3) {
                 validaciones.alert_error_toast( `${file.name}, Excede el tamaño permitido de 3mb`, 'top');
-				files = files.filter((el) => el.size != file.size);
-			} else {
-				denuncia.insertarFila(file);
-			}
-		}
-		console.log(files);
+                files = files.filter((el) => el.size != file.size);
+            } else {
+                denuncia.insertarFila(file);
+            }
+        }
 	});
     
 	$("#tableFiles").click((e) => {
@@ -160,6 +187,15 @@ odoo.define('website.denuncia', function(require) {
         }else{
             $('#otro_asunto').addClass('invisible').attr('aria-hidden',true);
             $('input[name="x_complaint_issues_other"]').removeClass('i_required is-invalid').val('');
+        }
+    });
+    
+    // Evento del input documento para buscar los dataos
+    $("input[name='x_implicated_document']").change(async function(e){
+        if(e.target.value.length > 3){
+//             let consulta = await denuncia.get_profesional();
+            denuncia.get_profesional();
+            console.info(e.target);
         }
     });
     
