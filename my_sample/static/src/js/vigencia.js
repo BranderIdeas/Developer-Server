@@ -84,7 +84,7 @@ odoo.define('website.vigencia', function(require) {
                     _this.downloadPDF();
                     $('#mssg_result').addClass('alert alert-info').text(response.mensaje);
                     setTimeout(()=>{
-                        window.top.location.href = 'https://www.cpnaa.gov.co/';
+                        window.top.location.href = 'https://cpnaa.gov.co/';
                     },2000)
                 }else{
                     $('#mssg_result').addClass('alert alert-danger').text(response.mensaje);
@@ -127,14 +127,14 @@ odoo.define('website.vigencia', function(require) {
                     response.tramites.forEach((tram)=>{
                         let mensaje = tram.x_legal_status == 'SANCIONADO' ? tram.mensaje : 'Seleccione para generar certificado';
                         let enlace = tram.x_legal_status == 'SANCIONADO' 
-                                   ? 'href="https://cpnaa.gov.co/profesionales-sancionados-y-amonestaciones/" target="_top"' 
-                                   : `href="/tramites/certificado_de_vigencia/${tram.id}"`;
+                                    ? 'href="https://cpnaa.gov.co/profesionales-sancionados-y-amonestaciones/" target="_top"' 
+                                    : `href="/tramites/certificado_de_vigencia/${tram.id}"`;
                         texto += `<a class="card card-link fw700" ${enlace}>
                                     <div class="card-header results-vigencia">
                                         PROFESIÓN: ${tram.x_studio_carrera_1[1]}
                                         <h5>${mensaje}</h5>
                                     </div>
-                                  </a></br>`;
+                                    </a></br>`;
                     })
                     div_msj.find('div').html(texto);
                 }
@@ -206,9 +206,9 @@ odoo.define('website.vigencia', function(require) {
     $('#btn_generar_certificado').click(()=>{
         let el = $('#email_vigencia');
         if(el.val().length < 1){
-           vigencia.class_invalido(el);
-           validaciones.mostrar_alerta_vacio('correo electrónico');
-           return;
+            vigencia.class_invalido(el);
+            validaciones.mostrar_alerta_vacio('correo electrónico');
+            return;
         }
         let valido = vigencia.validar_email(el, vigencia); 
         if(valido){
@@ -254,8 +254,8 @@ odoo.define('website.vigencia', function(require) {
     $('#btn_validar_vigencia').click(()=>{
         let el = $('#email_vigencia');
         if(el.val().length < 1){
-           vigencia.class_invalido(el);
-           validaciones.mostrar_alerta_vacio('correo electrónico');
+            vigencia.class_invalido(el);
+            validaciones.mostrar_alerta_vacio('correo electrónico');
         }
         let valido = vigencia.validar_email(el, vigencia); 
         if(!el.hasClass('invalido')){

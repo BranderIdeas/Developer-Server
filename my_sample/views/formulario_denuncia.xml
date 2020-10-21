@@ -227,6 +227,7 @@ Nota: Para la presentación de quejas ante el CPNAA  no se requiere contar con a
                                         <div class="col-md-6">
                                             <input type="text" class="form-control o_website_form_input o-letters i_required"
                                                 name="x_implicated_names" disabled="disabled" />
+                                            <span class="help-block link-modal-prof" id="open-modal-prof">Cambiar mi selección</span>
                                         </div>
                                     </div>
                                     <div class="row col-md-6 form-group form-field">
@@ -249,7 +250,8 @@ Nota: Para la presentación de quejas ante el CPNAA  no se requiere contar con a
                                             </label>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control o_website_form_input upper" name="x_implicated_enrollment_number"/>
+                                            <input type="text" class="form-control o_website_form_input upper" 
+                                                   name="x_implicated_enrollment_number" disabled="1"/>
                                         </div>
                                     </div>                                    
                                     <div class="row col-md-6 form-group form-field">
@@ -324,6 +326,7 @@ Nota: Para la presentación de quejas ante el CPNAA  no se requiere contar con a
                                         <div class="col-md-7">
                                             <input type="text" class="form-control o_website_form_input" 
                                                    maxlength="50" name="x_complaint_issues_other"/>
+                                            <span class="help-block">Máximo 50 caracteres</span>
                                         </div>
                                     </div>
                                     <hr style="border-top: 1px solid #CCCCCC !important;"/>
@@ -490,15 +493,18 @@ Bajo la gravedad de juramento me permito manifestar que los hechos narrados en e
                                     </div>
                                 </div>
                             </div>
-                        </div>s
+                        </div>
                         <div class="modal fade" id="results_profesional" tabindex="-1" role="dialog" 
-                             aria-labelledby="results_profesionalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-xl" role="document">
-                                <div class="modal-content">
+                             aria-labelledby="results_profesionalLabel" aria-hidden="true" style="top:20%;">
+                            <div class="modal-dialog modal-md" role="document">
+                                <div class="modal-content" style="border-radius:30px;">
                                     <div class="modal-header">
-                                        <h3 class="modal-title formTitle">Se han encontrado varias coincidencias</h3>
+                                        <h3 class="modal-title formTitle">Seleccione la profesión con la que desea relacionar la denuncia</h3>
                                     </div>
-                                    <div id="select_profesional" class="modal-body pdfViewer">
+                                    <div id="select_profesional" class="modal-body text-center formSection p-2 m-3">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary btn-lg btn-stadium" data-dismiss="modal">Cerrar</button>
                                     </div>
                                 </div>
                             </div>

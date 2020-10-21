@@ -174,6 +174,9 @@ class MySample(http.Controller):
     @http.route('/get_profesional', methods=["POST"], type="json", auth='public', website=True)
     def get_profesional(self, **kw):
         _logger.info(kw)
+        if kw.get('token'):
+            if not self.validar_captcha(kw.get('token')):
+                return { 'ok': False, 'error_captcha': True }
         campos = ['x_studio_nombres','x_studio_apellidos','x_studio_carrera_1','x_studio_documento_1','x_enrollment_number'] 
         tramites = http.request.env['x_cpnaa_procedure'].search_read([('x_studio_tipo_de_documento_1.id','=',kw['tipo_doc']),
                                                                       ('x_studio_documento_1','=',kw['documento']),
@@ -221,6 +224,19 @@ class MySample(http.Controller):
         else:
             return http.request.make_response(json.dumps(resp), headers={'Content-Type': 'application/json'})
     
+    # Ruta que renderiza página de formulario de denuncias
+    @http.route('/validar_preguntas', methods=["POST"], type="json", auth='public', website=True)
+    def validar_preguntas(self, **kw):
+        _logger.info(kw)
+        campos = ['x_studio_nombres','x_studio_apellidos','x_studio_carrera_1','x_studio_documento_1','x_enrollment_number'] 
+        tramites = http.request.env['x_cpnaa_procedure'].search_read([('x_studio_tipo_de_documento_1.id','=',kw['tipo_doc']),
+                                                                      ('x_studio_documento_1','=',kw['documento']),
+                                                                      ('x_cycle_ID.x_order','=',5)],campos)
+        if tramites:
+            return {'ok': True, 'result': tramites}
+        else:
+            return {'ok': False, 'result': 'No hay registros con la información suministrada'}
+        
     # Ruta que renderiza página de consulta de registro por documento
     @http.route('/consulta_online/por_documento', auth='public', website=True)
     def consulta_por_documento(self):
@@ -431,6 +447,16 @@ class MySample(http.Controller):
     @http.route('/convenios/tramite/por_nombre', auth='public', website=True)
     def inicio_convenio_nombre(self):
         return http.request.render('my_sample.inicio_tramite', {'form': 'convenio', 'inicio_tramite': True, 'por_nombre': True })
+    
+    # Ruta que renderiza el inicio del trámite acceso matrícula virtual
+    @http.route('/tramites/solicitud_virtual', auth='public', website=True)
+    def inicio_mat_virtual(self):
+        return http.request.render('my_sample.inicio_mat_virtual', {})
+    
+    # Ruta que renderiza las preguntas para el trámite acceso matrícula virtual
+    @http.route('/tramites/solicitud_virtual/<model("x_cpnaa_procedure"):tramite>', auth='public', website=True)
+    def preguntas_mat_virtual(self, tramite):
+        return http.request.render('my_sample.preguntas_mat_virtual', {'tramite': tramite})
     
     # Ruta que renderiza el inicio del trámite certificado de vigencia virtual
     @http.route('/tramites/certificado_de_vigencia', auth='public', website=True)

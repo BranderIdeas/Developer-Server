@@ -299,6 +299,13 @@ span.help-block {
   text-decoration: underline;
   display: none;
 }
+.link-modal-prof {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+  display: none;
+  text-align: left;
+}
 iframe.recibo-pdf, iframe#pdfViewerDiploma, iframe#pdfViewer {
     width: 100% !important;
 }
